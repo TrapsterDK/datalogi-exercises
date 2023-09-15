@@ -1,6 +1,7 @@
 from typing import Any
 from contextlib import suppress
 
+
 def sum_up_to(n: int) -> int:
     """Calculate the sum up to and including n.
     Pre-condition: n is a natural number.
@@ -10,7 +11,7 @@ def sum_up_to(n: int) -> int:
     if n == 0:
         return 0
     else:
-        return n+sum_up_to(n-1)
+        return n + sum_up_to(n - 1)
 
 
 def sum_even(n: int) -> int:
@@ -21,16 +22,16 @@ def sum_even(n: int) -> int:
     >>> sum_even(4)
     6
     """
-    n -= n%2
+    n -= n % 2
     if n == 0:
         return 0
     else:
-        return sum_even(n-2) + n
+        return sum_even(n - 2) + n
 
 
 def sum_between(m: int, n: int) -> int:
     """Calculate the sum between m and n including m and n.
-    Pre-condition: n is greater than m or equal.
+    Pre-condition: n is greater than or equal to m.
     >>> sum_between(-2, 4)
     7
     >>> sum_between(3, 5)
@@ -39,7 +40,7 @@ def sum_between(m: int, n: int) -> int:
     if m == n:
         return n
     else:
-        return m + sum_between(m+1, n)
+        return m + sum_between(m + 1, n)
 
 
 def factorial(n: int) -> int:
@@ -51,7 +52,7 @@ def factorial(n: int) -> int:
     if n == 0:
         return 1
     else:
-        return n * factorial(n-1)
+        return n * factorial(n - 1)
 
 
 def double_factorial(n: int) -> int:
@@ -65,7 +66,7 @@ def double_factorial(n: int) -> int:
     if n <= 0:
         return 1
     else:
-        return n * double_factorial(n-2)
+        return n * double_factorial(n - 2)
 
 
 def logarithm(n: int) -> int:
@@ -78,11 +79,12 @@ def logarithm(n: int) -> int:
     if n <= 1:
         return 0
     else:
-        return 1 + logarithm(n//2)
-    
+        return 1 + logarithm(n // 2)
+
 
 def gcd(m: int, n: int) -> int:
     """Calculate greatest common divisor for two numbers.
+    Pre-condition: m and n are positive integers.
     >>> gcd(6, 4)
     2
     """
@@ -96,6 +98,7 @@ def gcd(m: int, n: int) -> int:
 
 def lcm(m: int, n: int) -> int:
     """Calculate least common divisor for two numbers.
+    Pre-condition: m and n are positive integers.
     >>> lcm(6, 4)
     12
     """
@@ -105,6 +108,7 @@ def lcm(m: int, n: int) -> int:
 def first_digit(n: int, k: int = 10) -> int:
     """Calculate first digit of n in k base representation,
     where n is in base 10 representation.
+    Pre-condition: k is a positive integer.
     >>> first_digit(12, 3)
     1
     >>> first_digit(98)
@@ -113,12 +117,12 @@ def first_digit(n: int, k: int = 10) -> int:
     if n < k:
         return n
     else:
-        return first_digit(n//k, k)
+        return first_digit(n // k, k)
 
 
 def print_multiples(k: int, n: int, _progress: int = 0) -> None:
     """Print the multiples of k that are less than n not including n.
-    Pre-condition k and n are natural numbers.
+    Pre-condition: k is a positve integer and n is a natural number.
     >>> print_multiples(7, 28)
     7
     14
@@ -128,7 +132,7 @@ def print_multiples(k: int, n: int, _progress: int = 0) -> None:
     if progress < n:
         print(progress)
         print_multiples(k, n, progress)
-        
+
     return None
 
 
@@ -140,7 +144,7 @@ def count_divisors(n: int, _divisor: int = 1) -> int:
     >>> count_divisors(0)
     0
     """
-    if _divisor > n: # happens if 0 is used as n
+    if _divisor > n:  # happens if 0 is used as n
         return 0
     elif _divisor == n:
         return 1
@@ -149,13 +153,14 @@ def count_divisors(n: int, _divisor: int = 1) -> int:
 
 
 def is_perfect(n: int) -> bool:
-    """Calculate if an integer n is perfect.
+    """Calculate if an integer n is a perfect number.
     Pre-condition n is a natural number.
     >>> is_perfect(6)
     True
     >>> is_perfect(8)
     False
     """
+
     def divisor_sum(m: int, _divisor: int = 1) -> int:
         """Calculate the sum of all divisors for a given number excluding m.
         >>>divisor_sum(8)
@@ -170,10 +175,10 @@ def is_perfect(n: int) -> bool:
             return a
 
     return divisor_sum(n) == n
-        
+
 
 def count_perfect(n: int) -> int:
-    """Calculate the number of perfect numbers smaller than n including n.
+    """Calculate the number of perfect numbers smaller than n or equal to n.
     Pre-condition n is a natural number.
     Tests from https://en.wikipedia.org/wiki/Perfect_number.
     >>> count_perfect(27)
@@ -184,7 +189,7 @@ def count_perfect(n: int) -> int:
     if n == 0:
         return 0
     else:
-        return count_perfect(n-1) + int(is_perfect(n))
+        return count_perfect(n - 1) + int(is_perfect(n))
 
 
 def is_prime(n: int, _progress: int = 2) -> bool:
@@ -195,12 +200,12 @@ def is_prime(n: int, _progress: int = 2) -> bool:
     >>> is_prime(9)
     False
     """
-    if n <= 1: # 0 and 1 are not prime numbers
+    if n <= 1:  # 0 and 1 are not prime numbers
         return False
     elif _progress == n:
         return True
     else:
-        return is_prime(n, _progress + 1) and n%_progress != 0
+        return is_prime(n, _progress + 1) and n % _progress != 0
 
 
 def count_primes(n: int) -> int:
@@ -216,8 +221,8 @@ def count_primes(n: int) -> int:
     else:
         return count_primes(n - 1) + int(is_prime(n))
 
- 
-def sum_beyond(k: int) -> int:
+
+def sum_beyond(k: int) -> int:  # TODO make smarter
     """Calculate the smallest number n where the sum of all natural
     numbers up to n excluding n sums up to at least k.
     Pre-condition k is a natural number.
@@ -226,6 +231,7 @@ def sum_beyond(k: int) -> int:
     >>> sum_beyond(14)
     6
     """
+
     def sum_beyond_solver(k: int, progress: int) -> int:
         """Helper function that solves the sum_beyond,
         but returns the result as a negative number
@@ -247,7 +253,6 @@ def sum_beyond(k: int) -> int:
                 return -progress
             else:
                 return sr + progress
-            
 
     # if k is 0 for example we need 1 therefore k + 2
     return -sum_beyond_solver(k, k + 2)
@@ -268,7 +273,7 @@ def is_palindrome(n: int) -> bool:
     s = str(n)
     if s[0] != s[-1]:
         return False
-    
+
     ns = s[1:-1]
     if ns == "":
         return True
@@ -278,8 +283,7 @@ def is_palindrome(n: int) -> bool:
 
 def find_power(k: int, _n: int = 0) -> int:
     """Calculate the smallest int n such that 2^n starts with k.
-    Pre-condition k must be a natural number and,
-    must be some more specific value or something i guess......
+    Pre-condition k must be a natural number.
     >>> find_power(8)
     3
     >>> find_power(6)
@@ -288,7 +292,7 @@ def find_power(k: int, _n: int = 0) -> int:
     if str(2**_n).startswith(str(k)):
         return _n
     else:
-        return find_power(k, _n+1)
+        return find_power(k, _n + 1)
 
 
 def length(v: list) -> int:
@@ -313,7 +317,7 @@ def count(x: Any, v: list) -> int:
         return count(x, v[1:]) + int(x == v[0])
 
 
-def member(x: Any, v:list) -> bool:
+def member(x: Any, v: list) -> bool:
     """Check if x is in a list v.
     >>> member(3, [2, 3, 4])
     True
@@ -325,7 +329,8 @@ def member(x: Any, v:list) -> bool:
     else:
         return member(x, v[1:]) or x == v[0]
 
-def subset(v: list, w:list) -> bool:
+
+def subset(v: list, w: list) -> bool:
     """Check if v is a subset of w.
     >>> subset([2, 4], [2, 3, 4])
     True
@@ -360,7 +365,7 @@ def set_equals(v: list, w: list) -> bool:
             return False
 
 
-def intersection(v: list, w:list) -> list:
+def intersection(v: list, w: list) -> list:
     """Compute the shared elements of two lists, returns shared duplicates.
     >>> intersection([2, 4, 6, 8], [5, 2, 6, 1])
     [6, 2]
@@ -374,7 +379,7 @@ def intersection(v: list, w:list) -> list:
         with suppress(ValueError):
             w.remove(v[0])
             i.append(v[0])
-        
+
         return i
 
 
@@ -410,8 +415,8 @@ def smaller_than(n: int, v: list[int]) -> int:
     if not v:
         return 0
     else:
-        return smaller_than(n, v[1:]) + int(n>v[0])
-    
+        return smaller_than(n, v[1:]) + int(n > v[0])
+
 
 def two_zeros(v: list[int]) -> bool:
     """Check whether a list contains two consecutive zeros.
@@ -423,7 +428,7 @@ def two_zeros(v: list[int]) -> bool:
     if len(v) <= 1:
         return False
     else:
-        return two_zeros(v[1:]) or v[0] == v[1] == 0 
+        return two_zeros(v[1:]) or v[0] == v[1] == 0
 
 
 def even_after_7(v: list[int]) -> int:
@@ -432,6 +437,7 @@ def even_after_7(v: list[int]) -> int:
     >>> even_after_7([5, 2, 7, 0, 7, 2, 2, 4, 5, 2])
     2
     """
+
     def count_even(w: list) -> int:
         """Count the amount of even numbers in a list.
         >>> count_even([3, 5, 2, 4 , 3, 6, 1])
@@ -440,8 +446,8 @@ def even_after_7(v: list[int]) -> int:
         if not w:
             return 0
         else:
-            return count_even(w[1:]) + int(w[0]%2 == 0)
-        
+            return count_even(w[1:]) + int(w[0] % 2 == 0)
+
     return count_even(v[7:])
 
 
@@ -452,7 +458,7 @@ def is_sorted(v: list[int]) -> bool:
     >>> is_sorted([3, 2, 6, 29])
     False
     """
-    if len(v) <= 1: # always sorted if one or zero elements
+    if len(v) <= 1:  # always sorted if one or zero elements
         return True
     else:
         return is_sorted(v[1:]) and v[0] < v[1]
@@ -468,8 +474,8 @@ def squares(n: int) -> list[int]:
     if n == 1:
         return s
     else:
-        return squares(n-1) + s
-    
+        return squares(n - 1) + s
+
 
 def decreasing_squares(n: int) -> list[int]:
     """Calculate all squares from n to and including 1.
@@ -479,9 +485,9 @@ def decreasing_squares(n: int) -> list[int]:
     """
     s = [n**2]
     if n > 1:
-        s += decreasing_squares(n-1)
+        s += decreasing_squares(n - 1)
     return s
-    
+
 
 def divisors(n: int, _divisor: int = 1) -> list[int]:
     """Calculate the divisors for the number n, including n.
@@ -491,15 +497,16 @@ def divisors(n: int, _divisor: int = 1) -> list[int]:
     >>> divisors(0)
     []
     """
-    if _divisor > n: # happens if 0 is used as n
+    if _divisor > n:  # happens if 0 is used as n
         return []
-    if _divisor == n: # any number is divisible by itself except 0
+    if _divisor == n:  # any number is divisible by itself except 0
         return [n]
     else:
         d = divisors(n, _divisor + 1)
-        if n%_divisor == 0:
+        if n % _divisor == 0:
             d.append(_divisor)
         return d
+
 
 def square_it(v: list[int]) -> list[int]:
     """Square every number in the list v.
@@ -509,7 +516,7 @@ def square_it(v: list[int]) -> list[int]:
     if not v:
         return []
     else:
-        return [v[0]**2] + square_it(v[1:])
+        return [v[0] ** 2] + square_it(v[1:])
 
 
 def reverse(v: list[int]) -> list[int]:
@@ -542,14 +549,48 @@ def join(v: list, w: list) -> list:
     >>> join([2, 3, 1], [2, 8])
     [2, 3, 1, 2, 8]
     """
-    if not v:
-        if not w:
-            return []
-        else:
-            return [w[0]] + join(v, w[1:])
+    if not w:
+        return v
     else:
-        return [v[0]] + join(v[1:], w)
-        
+        return join(v + [w[0]], w[1:])
+
+def sorted_join(v: list[int], w: list[int]) -> list[int]:
+    """Join 2 sorted lists, usch that the list returned is ordered.
+    Pre-condition: v and w are sorted lists.
+    >>> sorted_join([3, 5, 11, 13], [1, 7, 14])
+    [1, 3, 5, 7, 11, 13, 14]
+    """
+    if not v or not w:
+        return v + w
+    elif v[0] < w[0]:
+        return [v[0]] + sorted_join(v[1:], w)
+    else:
+        return [w[0]] + sorted_join(v, w[1:])
+
+
+def shuffle(v: list, w: list) -> list:
+    """Create list where values from v and w alternate.
+    Pre-condition: v and w has the same length.
+    >>> shuffle([1, 4, 6], [2, 7, 9])
+    [1, 2, 4, 7, 6, 9]
+    """
+    if not v:
+        return []
+    else:
+        return [v[0], w[0]] + shuffle(v[1:], w[1:])
+
+
+def remove(x: Any, v: list) -> list:
+    """Compute list with all occurences of x removed.
+    >>> remove(4, [4, 2, 3, 4, 2, 4])
+    [2, 3, 2]
+    """
+    if not v:
+        return []
+    elif v[0] == x:
+        return remove(x, v[1:])
+    else:
+        return [v[0]] + remove(x, v[1:])
 
 
 
@@ -583,12 +624,4 @@ def join(v: list, w: list) -> list:
 
 
 
-
-
-
-
-
-
-
-
-
+    
