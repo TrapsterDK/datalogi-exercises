@@ -29,7 +29,8 @@ def sum_even(n: int) -> int:
 
 
 def sum_between(m: int, n: int) -> int:
-    """Calculate the sum between m and n includig m and n.
+    """Calculate the sum between m and n including m and n.
+    Pre-condition: n is greater than m or equal.
     >>> sum_between(-2, 4)
     7
     >>> sum_between(3, 5)
@@ -522,10 +523,33 @@ def reverse(v: list[int]) -> list[int]:
         return reverse(v[1:]) + [v[0]]
 
 
+def compare(v: list[int], n: int) -> tuple[int, int, int]:
+    """Compute number of elements greater than n,
+    the number of elements v equal to n,
+    number of elements less than n. In this order.
+    >>> compare([2, 3, 7, 4, 10, 9, 4, 4], 4)
+    (3, 3, 2)
+    """
+    if not v:
+        return (0, 0, 0)
+    else:
+        r = compare(v[1:], n)
+        return (r[0] + int(v[0] > n), r[1] + int(v[0] == n), r[2] + int(v[0] < n))
 
 
-
-
+def join(v: list, w: list) -> list:
+    """Join v followed by w.
+    >>> join([2, 3, 1], [2, 8])
+    [2, 3, 1, 2, 8]
+    """
+    if not v:
+        if not w:
+            return []
+        else:
+            return [w[0]] + join(v, w[1:])
+    else:
+        return [v[0]] + join(v[1:], w)
+        
 
 
 
