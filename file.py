@@ -1,5 +1,6 @@
 from typing import Any
 from contextlib import suppress
+from functools import reduce
 
 
 def sum_up_to(n: int) -> int:
@@ -591,6 +592,571 @@ def remove(x: Any, v: list) -> list:
         return remove(x, v[1:])
     else:
         return [v[0]] + remove(x, v[1:])
+
+
+def s_count(c: str, s:str) -> int:
+    """Count number of occurrences character in c, in s.
+    >>> s_count("c", "heycyascac")
+    3
+    """
+    if s == "":
+        return 0
+    elif c == s[0]:
+        return s_count(c, s[1:]) + 1
+    else:
+        return s_count(c, s[1:])
+        
+
+def s_member(c: str, s: str) -> bool:
+    """Check if character c is in string s.
+    >>> s_member("c", "heycyascac")
+    True
+    >>> s_member("e", "gfhf")
+    False
+    """
+    return s != "" and (c == s[0] or s_member(c, s[1:]))
+
+def is_prefix(s1: str, s2: str) -> bool:
+    """Check if s1 is a prefix of s2.
+    >>> is_prefix("her", "herme")
+    True
+    >>> is_prefix("nau", "nata")
+    False
+    """
+    return not s1 or (s2 and s1[0] == s2[0] and is_prefix(s1[1:], s2[1:]))
+
+
+def is_suffix(s1: str, s2: str) -> bool:
+    """Check if s1 is a prefix of s2.
+    >>> is_suffix("rme", "herme")
+    True
+    >>> is_suffix("nsa", "nata")
+    False
+    """
+    return not s1 or (s2 and s1[-1] == s2[-1] and is_suffix(s1[:-1], s2[:-1]))
+
+
+def is_substring(s1: str, s2: str) -> bool:
+    """Check is s1 is a substring of s2.
+    >>> is_substring("hey", "aheylo")
+    True
+    >>> is_substring("heya", "aheylo")
+    False
+    """
+    return s2!="" and (is_prefix(s1, s2) or is_substring(s1, s2[1:]))
+
+
+def s_contains(s1: str, s2: str) -> bool:
+    """Check if s2 can be obtained by deleting characters from s1.
+    >>> s_contains("haea", "hea")
+    True
+    >>> s_contains("haea", "hya")
+    False
+    """
+    return (s2 == ""
+        or (s1 != ""
+            and ((s1[0] == s2[0]
+                and s_contains(s1[1:], s2[1:])
+            )
+        or s_contains(s1[1:], s2)) )
+    )
+    
+
+def ceasar_code(s: str, n: int) -> str:
+    """Caesar encode a string by increasing each char by n,
+    that wraps characters from a-z.
+    >>> ceasar_code("heY", 2)
+    'jgA'
+    """
+    if not s:
+        return ""
+    else:
+        nc = (
+            " "
+            if s[0] == " " else
+            (
+                (ord(s[0].lower()) + n - ord("a")) % (ord("z") + 1 - ord("a"))
+                + (ord("A") if s[0].isupper() else ord("a"))
+            )
+        )
+        
+        return chr(nc) + ceasar_code(s[1:], n)
+
+
+def to_uppercase(s: str) -> str:
+    """Convert all alphabetic characters in string to uppercase.
+    >>> to_uppercase("Hey aA")
+    'HEY AA'
+    """
+    if not s:
+        return ""
+    elif ord('a') <= ord(s[0]) <= ord('z'):
+        return chr(ord(s[0]) - ord('a') + ord('A')) + to_uppercase(s[1:])
+    else:
+        return s[0] + to_uppercase(s[1:])
+
+
+
+def to_lowercase(s: str) -> str:
+    """Convert all alphabetic characters in string to uppercase.
+    >>> to_lowercase("Hey aA")
+    'hey aa'
+    """
+    if not s:
+        return ""
+    elif ord('A') <= ord(s[0]) <= ord('Z'):
+        return chr(ord(s[0]) - ord('A') + ord('a')) + to_lowercase(s[1:])
+    else:
+        return s[0] + to_lowercase(s[1:])
+
+
+def toCamelCase(s: str) -> str:
+    """Changes text to camel case by removing spaces,
+    and changing the next character to uppercase.
+    >>> toCamelCase("this is camel case")
+    'thisIsCamelCase'
+    """
+    if not s:
+        return ""
+    elif s[0] == " ":
+        if len(s) == 2: # check if there isn't a character after space
+            return ""
+        else:
+            return to_uppercase(s[1]) + toCamelCase(s[2:])
+    else:
+        return s[0] + toCamelCase(s[1:])
+
+
+def equals_ignore_case(s1: str, s2:str) -> bool:
+    """Check if strings are equal ignoring if letters are lower or upper-case.
+    >>> equals_ignore_case("heY A", "HeY a")
+    True
+    >>> equals_ignore_case("heY b", "HeY a")
+    False
+    """
+    return to_lowercase(s1) == to_lowercase(s2)
+
+
+def first_position(c: str, s: str) -> int:
+    """Index of first occurrence of character c in string s,
+    returns -1 if it is not in string s.
+    >>> first_position("c", "hecac")
+    2
+    >>> first_position("v", "hecac")
+    -1
+    """
+    if not s:
+        return -1
+    elif c == s[0]:
+        return 0
+    else:
+        r = first_position(c, s[1:])
+        return r if r == -1 else r + 1
+
+
+def last_position(c: str, s: str) -> int:
+    """Index of last occurrence of character c in string s,
+    returns -1 if it is not in string s.
+    >>> last_position("c", "hecac")
+    4
+    >>> last_position("v", "hecac")
+    -1
+    """
+    def _last_position(c: str, s: str) -> int:
+        if not s:
+            return -1
+        elif c == s[-1]:
+            return 1
+        else:
+            r = first_position(c, s[:-1])
+            return r if r == -1 else r + 1
+
+    p = _last_position(c, s)
+    return -1 if p == -1 else len(s) - p
+
+
+def positions(c: str, s: str) -> list[int]:
+    """Return list of positions where c occur in s.
+    >>> positions("h", "heheh")
+    [0, 2, 4]
+    """
+    if not s:
+        return []
+    else:
+        v = [0] if c == s[0] else []
+        return v + [e + 1 for e in positions(c, s[1:])]
+
+
+def is_permutation(s1: str, s2: str) -> bool:
+    """Check if s1 is a permutation of s2, with same characters counting repetitions.
+    >>> is_permutation("aba", "aab")
+    True
+    >>> is_permutation("aba", "abb")
+    False
+    """
+    if not s1 and not s2:
+        return True
+    elif not s1 or not s2:
+        return False
+    elif s_member(s1[0], s2):
+        p = first_position(s1[0], s2)
+        return is_permutation(s1[1:], s2[:p] + s2[p+1:])
+    else:
+        return False
+
+        
+def reverse(s: str) -> str:
+    """Reverse a string.
+    >>> reverse("hey")
+    'yeh'
+    """
+    if not s:
+        return ""
+    else:
+        return reverse(s[1:]) + s[0]
+
+
+def reverse_words(s: str) -> str:
+    """Reverse each word seperated by space, while preserving order.
+    >>> reverse_words("lar nar bas")
+    'ral ran sab'
+    """
+    def _split(s: str) -> list[str]:
+        if not s:
+            return []
+        else:
+            p = first_position(" ", s)
+            if p == -1:
+                return [s]
+            else:
+                return [s[:p]] + _split(s[p+1:])
+    
+    def _reverse_words(v: list[str]) -> list[str]:
+        if not v:
+            return []
+        else:
+            return [reverse(v[0])] + _reverse_words(v[1:])
+
+    def _join(v: list[str]) -> str:
+        if not v:
+            return ""
+        elif len(v) == 1:
+            return v[0]
+        else:
+            return v[0] + " " + _join(v[1:])
+
+    return _join(_reverse_words(_split(s)))
+
+
+def remove_vowels(s: str) -> str:
+    """Remove all vowels from a string.
+    >>> remove_vowels("hey you are fine")
+    'h  r fn'
+    """
+    if not s:
+        return ""
+    elif s[0] in ["a", "e", "i", "o", "u", "y"]:
+        return remove_vowels(s[1:])
+    else:
+        return s[0] + remove_vowels(s[1:])
+
+def respace(s: str, n: int) -> str:
+    """Remove all spaces and add a space after every n character.
+    >>> respace("hey how are you", 2)
+    'he yh ow ar ey ou '
+    """
+    def _remove_spaces(s: str) -> str:
+        if not s:
+            return ""
+        elif s[0] == " ":
+            return _remove_spaces(s[1:])
+        else:
+            return s[0] + _remove_spaces(s[1:])
+
+    def _respace(s: str, n: int) -> str:
+        if not s:
+            return ""
+        if len(s) >= 2:
+            return s[0:2] + " " + _respace(s[2:], n)
+        else:
+            return s[0]
+
+    return _respace(_remove_spaces(s), n)
+
+
+def encode_with_key(s: str, code: dict[str, str]) -> str:
+    """Encode the key chracter by character using the hashmap.
+    >>> encode_with_key("hE y", {"H": "B", "E": "L", "Y": "C"})
+    'bL c'
+    """
+    if not s:
+        return ""
+    elif ord("a") <= ord(s[0]) <= ord("z"):
+        return to_lowercase(code[to_uppercase(s[0])]) + encode_with_key(s[1:], code)
+    elif ord("A") <= ord(s[0]) <= ord("Z"):
+        return code[s[0]] + encode_with_key(s[1:], code)
+    else:
+        return s[0] + encode_with_key(s[1:], code)
+
+
+def histogram(s: str) -> dict[str, int]:
+    """Return a dictionary containing how many times a alphabetic letter appeared.
+    >>> histogram("tes tss")
+    {'S': 3, 'T': 2, 'E': 1}
+    """
+    if not s:
+        return dict()
+    elif ord("A") <= ord(to_uppercase(s[0])) <= ord("Z"):
+        h = histogram(s[1:])
+        h[to_uppercase(s[0])] = h.get(to_uppercase(s[0]), 0) + 1
+        return h
+    else:
+        return histogram(s[1:])
+        
+        
+def replicate(s: str, v: list[int]) -> str:
+    """Replicate each character s[i] by v[i].
+    Pre-condition: len(s) == len(v) and each int in v is a positive integer.
+    >>> replicate("tes", [2, 4, 3])
+    'tteeeesss'
+    """
+    if not s:
+        return ''
+    else:
+        return s[0] * v[0] + replicate(s[1:], v[1:]) 
+    
+
+def f_sum(v: list[int]) -> int:
+    """Sum of a list of ints.
+    >>> f_sum([1, 4, 6, 2])
+    13
+    >>> f_sum([])
+    0
+    """
+    return reduce(lambda x, y: x+y, v, 0)
+
+
+def f_length(v: list) -> int:
+    """Length of a list.
+    >>> f_length([2, 3, 1, 2, 2])
+    5
+    """
+    return reduce(lambda x, y: x + 1, v, 0)
+
+
+def f_remove(x: Any, v: list) -> list:
+    """Remove all occurrences of x from v.
+    >>> f_remove(3, [3, 4, 3, 2])
+    [4, 2]
+    """
+    return list(filter(lambda y: x != y, v))
+
+
+def f_count(x: Any, v: list) -> int:
+    """Count occurrences of x in list v.
+    >>> f_count(2, [3, 2, 3, 2, 5])
+    2
+    """
+    return reduce(lambda z, k: z + 1, filter(lambda y: x == y, v), 0)
+
+
+def f_max(v: list[int]) -> int:
+    """Largest element in a list.
+    Pre-condition: list must have 1 or more elements.
+    >>> f_max([2, 4, 1, 3])
+    4
+    """
+    return reduce(lambda x, y: x if x > y else y, v)
+
+
+def f_square_it(v: list[int]) -> list[int]:
+    """Square all elements in v.
+    Pre-condition element contains at least one element.
+    >>> f_square_it([3, 1,  2, 4])
+    [9, 1, 4, 16]
+    """
+    return list(map(lambda x: x**2, v))
+
+
+def f_squares(n: int) -> list[int]:
+    """List of squares from 1 to n, including n.
+    Pre-condition: n is a positive integer.
+    >>> f_squares(4)
+    [1, 4, 9, 16]
+    """
+    return list(map(lambda x: x**2, range(1, n + 1)))
+
+
+def f_decreasing_squares(n: int) -> list[int]:
+    """List of squares from n to 1, including 1.
+    Pre-condition: n is a positive integer.
+    >>> f_decreasing_squares(4)
+    [16, 9, 4, 1]
+    """
+    return list(map(lambda x: x**2, range(n, 1 - 1, -1)))
+
+
+def f_reverse(v: list) -> list:
+    """Reverse a list.
+    Pre-condition: list contains at least one element.
+    >>> f_reverse([3, 1, 2])
+    [2, 1, 3]
+    """
+    return reduce(lambda x, y: [y] + x, v, [])
+
+
+def f_sum_up_to(n: int) -> int:
+    """Sum up to n, excluding n.
+    Pre-condition: n is a natural number.
+    >>> f_sum_up_to(4)
+    6
+    >>> f_sum_up_to(0)
+    0
+    """
+    return reduce(lambda x, y: x + y, range(n), 0)
+
+
+def f_sum_between(m: int, n: int) -> int:
+    """Sum between m and n, including m and not n.
+    >>> f_sum_between(-2, 4)
+    3
+    """
+    return reduce(lambda x, y: x + y, range(m, n), 0)
+
+
+def f_sum_even(n: int) -> int:
+    """Sum of all even numbers up to n, excluding n.
+    Pre-condition: n is a natural number.
+    >>> f_sum_even(5)
+    6
+    >>> f_sum_even(6)
+    6
+    """
+    return reduce(lambda x, y: x + y, range(0, n, 2), 0)
+
+
+def f_factorial(n: int) -> int:
+    """Factorial of n.
+    Pre-condition: n is a natural number.
+    >>> f_factorial(4)
+    24
+    """
+    return reduce(lambda x, y: x*y, range(1, n+1), 1)
+
+
+def f_double_factorial(n: int) -> int:
+    """Double factorial of n.
+    Pre-condition: n is a natural number.
+    >>> f_double_factorial(4)
+    8
+    >>> f_double_factorial(5)
+    15
+    """
+    return reduce(lambda x, y: x*y, range(2 + n%2, n + 1, 2), 1)
+
+def f_member(x: Any, v: list) -> bool:
+    """Check if x is a member of v.
+    >>> f_member(3, [4, 3, 2, 1])
+    True
+    >>> f_member(3, [4, 2, 1])
+    False
+    """
+    return reduce(lambda y, z: y or z == x, v, False)
+    #      reduce(lambda y, z: y or z, filter(lambda m: m == x, v), False)
+
+
+def f_subset(v: list, w: list) -> bool:
+    """Check if all elements in v occur in w.
+    >>> f_subset([3, 4, 2], [1, 2, 4, 5, 3])
+    True
+    >>> f_subset([3, 4, 2], [1, 2, 5, 3])
+    False
+    """
+    return reduce(lambda x, y: x and y in w, v, True)
+    #      reduce(lambda x, y: x and y, map(lambda z: z in w, v), True)
+
+
+def f_intersection(v: list, w: list) -> list:
+    """Intersection between two lists.
+    >>> f_intersection([3, 2, 1], [0, 1, 2])
+    [2, 1]
+    """
+    return list(filter(lambda x: x in w, v))
+
+
+def f_smaller_than(n: int, v: list[int]) -> int:
+    """Count have many elements in v are strictly smaller than n.
+    >>> f_smaller_than(5, [1, 4, 5, 7])
+    2
+    """
+    return reduce(lambda x, y: x + 1, filter(lambda x: x < n, v), 0)
+
+
+
+def f_ceasar_code(s: str, n: int) -> str:
+    """Caesar encode a string by increasing each char by n,
+    that wraps characters from a-z.
+    >>> f_ceasar_code("he Y", 2)
+    'jg A'
+    """
+    def _ceasar_char(c: str, n: int) -> str:
+        if c == " ":
+            return " "
+        else:
+            return chr(
+                (ord(c.lower()) + n - ord("a")) % (ord("z") + 1 - ord("a"))
+                + (ord("A") if c.isupper() else ord("a"))
+            )
+
+    return reduce(lambda x, y: x + y, map(lambda z: _ceasar_char(z, n), s), "")
+
+
+def f_to_uppercase(s: str) -> str:
+    """Convert alphabetic characters to uppercase.
+    >>> f_to_uppercase("heY a")
+    'HEY A'
+    """
+    def _to_uppercase(c: str) -> str:
+        if ord('a') <= ord(c) <= ord('z'):
+            return chr(ord(c) - ord('a') + ord('A'))
+        else:
+            return c
+    
+    return reduce(lambda x, y: x + y, map(lambda z: _to_uppercase(z), s), "")
+
+
+def f_to_lowercase(s: str) -> str:
+    """Convert alphabetic characters to uppercase.
+    >>> f_to_lowercase("heY a")
+    'hey a'
+    """
+    def _to_lowercase(c: str) -> str:
+        if ord('A') <= ord(c) <= ord('Z'):
+            return chr(ord(c) - ord('A') + ord('a'))
+        else:
+            return c
+    
+    return reduce(lambda x, y: x + y, map(lambda z: _to_lowercase(z), s), "")
+
+
+def f_count_divisors(n: int) -> int:
+    """Count positive divisors for n.
+    Precondition n is a non zero integer.
+    >>> f_count_divisors(8)
+    4
+    >>> f_count_divisors(-8)
+    4
+    """
+    n = abs(n)
+    return reduce(lambda x, y: x + 1, filter(lambda z: n%z == 0, range(1, n + 1)), 0)
+
+
+
+
+
+
+
+
 
 
 
