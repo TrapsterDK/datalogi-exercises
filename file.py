@@ -451,6 +451,7 @@ def even_after_7(v: list[int]) -> int:
 
     return count_even(v[7:])
 
+
 def even_after_7_other_interpretation(v: list[int]) -> int:
     """Compute the amount of even elements after the first element with the value 7.
     >>> even_after_7_other_interpretation([5, 2, 7, 0, 1, 2, 4])
@@ -473,7 +474,7 @@ def even_after_7_other_interpretation(v: list[int]) -> int:
         return _count_even(v[1:])
     else:
         return even_after_7_other_interpretation(v[1:])
-        
+
 
 def is_sorted(v: list[int]) -> bool:
     """Check if a list is sorted.
@@ -544,7 +545,7 @@ def square_it(v: list[int]) -> list[int]:
         return [v[0] ** 2] + square_it(v[1:])
 
 
-def reverse(v: list[int]) -> list[int]:
+def reverse(v: list) -> list:
     """Reverse a list.
     >>> reverse([4, 1, 3, 12])
     [12, 3, 1, 4]
@@ -578,6 +579,7 @@ def join(v: list, w: list) -> list:
         return v
     else:
         return join(v + [w[0]], w[1:])
+
 
 def sorted_join(v: list[int], w: list[int]) -> list[int]:
     """Join 2 sorted lists, usch that the list returned is ordered.
@@ -618,7 +620,7 @@ def remove(x: Any, v: list) -> list:
         return [v[0]] + remove(x, v[1:])
 
 
-def s_count(c: str, s:str) -> int:
+def s_count(c: str, s: str) -> int:
     """Count number of occurrences character in c, in s.
     >>> s_count("c", "heycyascac")
     3
@@ -629,7 +631,7 @@ def s_count(c: str, s:str) -> int:
         return s_count(c, s[1:]) + 1
     else:
         return s_count(c, s[1:])
-        
+
 
 def s_member(c: str, s: str) -> bool:
     """Check if character c is in string s.
@@ -640,6 +642,7 @@ def s_member(c: str, s: str) -> bool:
     """
     return s != "" and (c == s[0] or s_member(c, s[1:]))
 
+
 def is_prefix(s1: str, s2: str) -> bool:
     """Check if s1 is a prefix of s2.
     >>> is_prefix("her", "herme")
@@ -647,7 +650,7 @@ def is_prefix(s1: str, s2: str) -> bool:
     >>> is_prefix("nau", "nata")
     False
     """
-    return not s1 or (s2 and s1[0] == s2[0] and is_prefix(s1[1:], s2[1:]))
+    return not s1 or (s2 != "" and s1[0] == s2[0] and is_prefix(s1[1:], s2[1:]))
 
 
 def is_suffix(s1: str, s2: str) -> bool:
@@ -657,7 +660,7 @@ def is_suffix(s1: str, s2: str) -> bool:
     >>> is_suffix("nsa", "nata")
     False
     """
-    return not s1 or (s2 and s1[-1] == s2[-1] and is_suffix(s1[:-1], s2[:-1]))
+    return not s1 or (s2 != "" and s1[-1] == s2[-1] and is_suffix(s1[:-1], s2[:-1]))
 
 
 def is_substring(s1: str, s2: str) -> bool:
@@ -667,7 +670,7 @@ def is_substring(s1: str, s2: str) -> bool:
     >>> is_substring("heya", "aheylo")
     False
     """
-    return s2!="" and (is_prefix(s1, s2) or is_substring(s1, s2[1:]))
+    return s2 != "" and (is_prefix(s1, s2) or is_substring(s1, s2[1:]))
 
 
 def s_contains(s1: str, s2: str) -> bool:
@@ -677,14 +680,11 @@ def s_contains(s1: str, s2: str) -> bool:
     >>> s_contains("haea", "hya")
     False
     """
-    return (s2 == ""
-        or (s1 != ""
-            and ((s1[0] == s2[0]
-                and s_contains(s1[1:], s2[1:])
-            )
-        or s_contains(s1[1:], s2)) )
+    return s2 == "" or (
+        s1 != ""
+        and ((s1[0] == s2[0] and s_contains(s1[1:], s2[1:])) or s_contains(s1[1:], s2))
     )
-    
+
 
 def ceasar_code(s: str, n: int) -> str:
     """Caesar encode a string by increasing each char by n,
@@ -697,14 +697,14 @@ def ceasar_code(s: str, n: int) -> str:
     else:
         nc = (
             " "
-            if s[0] == " " else
-            (
+            if s[0] == " "
+            else chr(
                 (ord(s[0].lower()) + n - ord("a")) % (ord("z") + 1 - ord("a"))
                 + (ord("A") if s[0].isupper() else ord("a"))
             )
         )
-        
-        return chr(nc) + ceasar_code(s[1:], n)
+
+        return nc + ceasar_code(s[1:], n)
 
 
 def to_uppercase(s: str) -> str:
@@ -714,11 +714,10 @@ def to_uppercase(s: str) -> str:
     """
     if not s:
         return ""
-    elif ord('a') <= ord(s[0]) <= ord('z'):
-        return chr(ord(s[0]) - ord('a') + ord('A')) + to_uppercase(s[1:])
+    elif ord("a") <= ord(s[0]) <= ord("z"):
+        return chr(ord(s[0]) - ord("a") + ord("A")) + to_uppercase(s[1:])
     else:
         return s[0] + to_uppercase(s[1:])
-
 
 
 def to_lowercase(s: str) -> str:
@@ -728,8 +727,8 @@ def to_lowercase(s: str) -> str:
     """
     if not s:
         return ""
-    elif ord('A') <= ord(s[0]) <= ord('Z'):
-        return chr(ord(s[0]) - ord('A') + ord('a')) + to_lowercase(s[1:])
+    elif ord("A") <= ord(s[0]) <= ord("Z"):
+        return chr(ord(s[0]) - ord("A") + ord("a")) + to_lowercase(s[1:])
     else:
         return s[0] + to_lowercase(s[1:])
 
@@ -743,7 +742,7 @@ def toCamelCase(s: str) -> str:
     if not s:
         return ""
     elif s[0] == " ":
-        if len(s) == 2: # check if there isn't a character after space
+        if len(s) == 2:  # check if there isn't a character after space
             return ""
         else:
             return to_uppercase(s[1]) + toCamelCase(s[2:])
@@ -751,7 +750,7 @@ def toCamelCase(s: str) -> str:
         return s[0] + toCamelCase(s[1:])
 
 
-def equals_ignore_case(s1: str, s2:str) -> bool:
+def equals_ignore_case(s1: str, s2: str) -> bool:
     """Check if strings are equal ignoring if letters are lower or upper-case.
     >>> equals_ignore_case("heY A", "HeY a")
     True
@@ -786,6 +785,7 @@ def last_position(c: str, s: str) -> int:
     >>> last_position("v", "hecac")
     -1
     """
+
     def _last_position(c: str, s: str) -> int:
         if not s:
             return -1
@@ -824,20 +824,20 @@ def is_permutation(s1: str, s2: str) -> bool:
         return False
     elif s_member(s1[0], s2):
         p = first_position(s1[0], s2)
-        return is_permutation(s1[1:], s2[:p] + s2[p+1:])
+        return is_permutation(s1[1:], s2[:p] + s2[p + 1 :])
     else:
         return False
 
-        
-def reverse(s: str) -> str:
+
+def s_reverse(s: str) -> str:
     """Reverse a string.
-    >>> reverse("hey")
+    >>> s_reverse("hey")
     'yeh'
     """
     if not s:
         return ""
     else:
-        return reverse(s[1:]) + s[0]
+        return s_reverse(s[1:]) + s[0]
 
 
 def reverse_words(s: str) -> str:
@@ -845,6 +845,7 @@ def reverse_words(s: str) -> str:
     >>> reverse_words("lar nar bas")
     'ral ran sab'
     """
+
     def _split(s: str) -> list[str]:
         if not s:
             return []
@@ -853,13 +854,13 @@ def reverse_words(s: str) -> str:
             if p == -1:
                 return [s]
             else:
-                return [s[:p]] + _split(s[p+1:])
-    
+                return [s[:p]] + _split(s[p + 1 :])
+
     def _reverse_words(v: list[str]) -> list[str]:
         if not v:
             return []
         else:
-            return [reverse(v[0])] + _reverse_words(v[1:])
+            return [v[0][::-1]] + _reverse_words(v[1:])
 
     def _join(v: list[str]) -> str:
         if not v:
@@ -884,11 +885,13 @@ def remove_vowels(s: str) -> str:
     else:
         return s[0] + remove_vowels(s[1:])
 
+
 def respace(s: str, n: int) -> str:
     """Remove all spaces and add a space after every n character.
     >>> respace("hey how are you", 2)
     'he yh ow ar ey ou '
     """
+
     def _remove_spaces(s: str) -> str:
         if not s:
             return ""
@@ -936,8 +939,8 @@ def histogram(s: str) -> dict[str, int]:
         return h
     else:
         return histogram(s[1:])
-        
-        
+
+
 def replicate(s: str, v: list[int]) -> str:
     """Replicate each character s[i] by v[i].
     Pre-condition: len(s) == len(v) and each int in v is a positive integer.
@@ -945,10 +948,10 @@ def replicate(s: str, v: list[int]) -> str:
     'tteeeesss'
     """
     if not s:
-        return ''
+        return ""
     else:
-        return s[0] * v[0] + replicate(s[1:], v[1:]) 
-    
+        return s[0] * v[0] + replicate(s[1:], v[1:])
+
 
 def f_sum(v: list[int]) -> int:
     """Sum of a list of ints.
@@ -957,7 +960,7 @@ def f_sum(v: list[int]) -> int:
     >>> f_sum([])
     0
     """
-    return reduce(lambda x, y: x+y, v, 0)
+    return reduce(lambda x, y: x + y, v, 0)
 
 
 def f_length(v: list) -> int:
@@ -1065,7 +1068,7 @@ def f_factorial(n: int) -> int:
     >>> f_factorial(4)
     24
     """
-    return reduce(lambda x, y: x*y, range(1, n+1), 1)
+    return reduce(lambda x, y: x * y, range(1, n + 1), 1)
 
 
 def f_double_factorial(n: int) -> int:
@@ -1076,7 +1079,8 @@ def f_double_factorial(n: int) -> int:
     >>> f_double_factorial(5)
     15
     """
-    return reduce(lambda x, y: x*y, range(2 + n%2, n + 1, 2), 1)
+    return reduce(lambda x, y: x * y, range(2 + n % 2, n + 1, 2), 1)
+
 
 def f_member(x: Any, v: list) -> bool:
     """Check if x is a member of v.
@@ -1116,13 +1120,13 @@ def f_smaller_than(n: int, v: list[int]) -> int:
     return reduce(lambda x, y: x + 1, filter(lambda x: x < n, v), 0)
 
 
-
 def f_ceasar_code(s: str, n: int) -> str:
     """Caesar encode a string by increasing each char by n,
     that wraps characters from a-z.
     >>> f_ceasar_code("he Y", 2)
     'jg A'
     """
+
     def _ceasar_char(c: str, n: int) -> str:
         if c == " ":
             return " "
@@ -1140,12 +1144,13 @@ def f_to_uppercase(s: str) -> str:
     >>> f_to_uppercase("heY a")
     'HEY A'
     """
+
     def _to_uppercase(c: str) -> str:
-        if ord('a') <= ord(c) <= ord('z'):
-            return chr(ord(c) - ord('a') + ord('A'))
+        if ord("a") <= ord(c) <= ord("z"):
+            return chr(ord(c) - ord("a") + ord("A"))
         else:
             return c
-    
+
     return reduce(lambda x, y: x + y, map(lambda z: _to_uppercase(z), s), "")
 
 
@@ -1154,12 +1159,13 @@ def f_to_lowercase(s: str) -> str:
     >>> f_to_lowercase("heY a")
     'hey a'
     """
+
     def _to_lowercase(c: str) -> str:
-        if ord('A') <= ord(c) <= ord('Z'):
-            return chr(ord(c) - ord('A') + ord('a'))
+        if ord("A") <= ord(c) <= ord("Z"):
+            return chr(ord(c) - ord("A") + ord("a"))
         else:
             return c
-    
+
     return reduce(lambda x, y: x + y, map(lambda z: _to_lowercase(z), s), "")
 
 
@@ -1172,8 +1178,68 @@ def f_count_divisors(n: int) -> int:
     4
     """
     n = abs(n)
-    return reduce(lambda x, y: x + 1, filter(lambda z: n%z == 0, range(1, n + 1)), 0)
+    return reduce(lambda x, y: x + 1, filter(lambda z: n % z == 0, range(1, n + 1)), 0)
 
+
+def f_is_perfect(n: int) -> int:
+    """Check if n is a perfect number.
+    Pre-condition: n is a positive integer.
+    >>> f_is_perfect(6)
+    True
+    >>> f_is_perfect(8)
+    False
+    """
+    return (
+        reduce(
+            lambda x, y: x + y, filter(lambda z: n % z == 0, range(1, n // 2 + 1)), 0
+        )
+        == n
+    )
+
+
+def f_count_perfect(n: int) -> int:
+    """Count number of perfect numbers less than n or equal to n.
+    Pre-condition n is a positive integer.
+    Tests from https://en.wikipedia.org/wiki/Perfect_number.
+    >>> f_count_perfect(27)
+    1
+    >>> f_count_perfect(28)
+    2
+    """
+    return reduce(lambda x, y: x + 1, filter(f_is_perfect, range(1, n + 1)), 0)
+
+
+def f_is_prime(n: int) -> int:
+    """Check if n is a prime number.
+    Pre-condition: n is a natural number.
+    >>> f_is_prime(7)
+    True
+    >>> f_is_prime(4)
+    False
+    """
+
+    if n == 0:
+        return False
+    else:
+        return (
+            reduce(
+                lambda x, y: x + 1,
+                filter(lambda z: n % z == 0, range(1, n // 2 + 1)),
+                0,
+            )
+            == 1  # Must have 1 divisor to be a prime, as the other is implicitly itself
+        )
+
+
+def f_count_primes(n: int) -> int:
+    """Count number of prime numbers less than n or equal to n.
+    Pre-condition: n is a natural number.
+    >>> f_count_primes(7)
+    4
+    >>> f_count_primes(6)
+    3
+    """
+    return reduce(lambda x, y: x + 1, filter(f_is_prime, range(n + 1)), 0)
 
 
 def f_two_zeros(v: list[int]) -> bool:
@@ -1185,41 +1251,3 @@ def f_two_zeros(v: list[int]) -> bool:
     """
     _, result = reduce(lambda x, y: (y, x[1] or x[0] == y == 0), v, (1, False))
     return result
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
- 
