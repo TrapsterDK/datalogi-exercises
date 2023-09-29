@@ -441,7 +441,7 @@ def even_after_7(v: list[int]) -> int:
 
     def count_even(w: list) -> int:
         """Count the amount of even numbers in a list.
-        >>> count_even([3, 5, 2, 4 , 3, 6, 1])
+        >>> count_even([3, 5, 2, 4, 3, 6, 1])
         3
         """
         if not w:
@@ -451,6 +451,29 @@ def even_after_7(v: list[int]) -> int:
 
     return count_even(v[7:])
 
+def even_after_7_other_interpretation(v: list[int]) -> int:
+    """Compute the amount of even elements after the first element with the value 7.
+    >>> even_after_7_other_interpretation([5, 2, 7, 0, 1, 2, 4])
+    3
+    """
+
+    def _count_even(w: list) -> int:
+        """Count the amount of even numbers in a list.
+        >>> count_even([3, 5, 2, 4, 3, 6, 1])
+        3
+        """
+        if not w:
+            return 0
+        else:
+            return _count_even(w[1:]) + int(w[0] % 2 == 0)
+
+    if not v:
+        return 0
+    if v[0] == 7:
+        return _count_even(v[1:])
+    else:
+        return even_after_7_other_interpretation(v[1:])
+        
 
 def is_sorted(v: list[int]) -> bool:
     """Check if a list is sorted.
@@ -462,7 +485,8 @@ def is_sorted(v: list[int]) -> bool:
     if len(v) <= 1:  # always sorted if one or zero elements
         return True
     else:
-        return is_sorted(v[1:]) and v[0] < v[1]
+        return v[0] <= v[1] and is_sorted(v[1:])
+    # return len(v) <= 1 or (v[0] <= v[1] and is_sorted(v[1:]))
 
 
 def squares(n: int) -> list[int]:
@@ -1152,8 +1176,15 @@ def f_count_divisors(n: int) -> int:
 
 
 
-
-
+def f_two_zeros(v: list[int]) -> bool:
+    """Check if there are 2 consecutive zeros.
+    >>> f_two_zeros([2, 0, 0, 1, 3])
+    True
+    >>> f_two_zeros([2, 0, 1, 0, 3])
+    False
+    """
+    _, result = reduce(lambda x, y: (y, x[1] or x[0] == y == 0), v, (1, False))
+    return result
 
 
 
@@ -1191,3 +1222,4 @@ def f_count_divisors(n: int) -> int:
 
 
     
+ 
