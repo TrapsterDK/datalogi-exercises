@@ -1,0 +1,18 @@
+2110;Copy bit-string YY to register 1 # Load x;
+220F;Copy bit-string XY to register 2 # Load y;
+2300;Copy bit-string 00 to register 3 # Set counter to 0;
+2400;Copy bit-string 00 to register 4 # Set sum to 0;
+2501;Copy bit-string 01 to register 5 # Set to 0x01 for bitwise and, and to add  1 to counter;
+2007;Copy bit-string 07 to register 0 # Set limit to 7, because we only have to add 8 times, because it's 8 bit numbers;
+D31E;Jump to cell 1E if register 3 is greater than register 0 # Jump to exit if counter is 8 ;
+A101;Rotate bits in register 1 cyclically right 1 steps # Bitshift x by 1 to the right;
+8651;Bitwise AND bits in registers 5 and 1, put in register 6 # Set z to bitwise x and 0x01;
+A207;Rotate bits in register 2 cyclically right 7 steps # Bitshift y by 1 to the left;
+5353;Add bits in registers 5 and 3 (two's-complement), put in 3 # Add 1 to counter;
+2000;Copy bit-string 00 to register 0 # Set register 0 to 0x00;
+B60A;Jump to cell 0A if register 6 equals register 0 # Jump to repeat multiply if z is 0, because then we don't need to add;
+5424;Add bits in registers 2 and 4 (two's-complement), put in 4 # Add y to sum;
+B00A;Jump to cell 0A if register 0 equals register 0 # Always jump to repeat multiply;
+3422;Copy bits in register 4 to cell 22 # Save multiplication result to cell 0x22;
+C000
+F000
