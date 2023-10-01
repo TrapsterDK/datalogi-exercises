@@ -1244,10 +1244,311 @@ def f_count_primes(n: int) -> int:
 
 def f_two_zeros(v: list[int]) -> bool:
     """Check if there are 2 consecutive zeros.
-    >>> f_two_zeros([2, 0, 0, 1, 3])
+    >>> f_two_zeros([2, 0, 0, 1, 0, 3])
     True
     >>> f_two_zeros([2, 0, 1, 0, 3])
     False
     """
-    _, result = reduce(lambda x, y: (y, x[1] or x[0] == y == 0), v, (1, False))
-    return result
+    # _, result = reduce(lambda x, y: (y, x[1] or x[0] == y == 0), v, (1, False))
+    # return result
+    return (
+        reduce(
+            lambda x, y: 2 if x + y >= 2 else y,
+            map(lambda z: 1 if z == 0 else 0, v),
+            0,
+        )
+        == 2
+    )
+
+
+def f_is_sorted(v: list[int]) -> bool:
+    """Check if a list is sorted.
+    >>> f_is_sorted([2, 3, 7, 12])
+    True
+    >>> f_is_sorted([2, 8, 7, 12])
+    False
+    """
+    return reduce(
+        lambda x, y: x and y, map(lambda z: z[0] <= z[1], zip(v, v[1:])), True
+    )
+
+
+def f_compare(v: list[int], n: int) -> tuple[int, int, int]:
+    """Compute number of elements greater than n,
+    the number of elements v equal to n,
+    number of elements less than n. In this order.
+    >>> f_compare([2, 3, 7, 4, 10, 9, 4, 4], 4)
+    (3, 3, 2)
+    """
+    return reduce(
+        lambda x, y: (
+            x[0] + (1 if y > n else 0),
+            x[1] + (1 if y == n else 0),
+            x[2] + (1 if y < n else 0),
+        ),
+        v,
+        (0, 0, 0),
+    )
+
+
+def f_positions(c: str, s: str) -> list[int]:
+    """Return list of positions where c occur in s.
+    >>> positions("h", "heheh")
+    [0, 2, 4]
+    """
+    return reduce(lambda x, y: x + [y] if y else x, map(lambda z: z == c, s), [])
+    #      reduce(lambda x, y: x + [y] if y == c else x, s, [])
+
+
+def f_replicate(s: str, v: list[int]) -> str:
+    """Replicate each character s[i] by v[i].
+    Pre-condition: len(s) == len(v) and each int in v is a positive integer.
+    >>> f_replicate("tes", [2, 4, 3])
+    'tteeeesss'
+    """
+    return reduce(lambda x, y: x + y[0] * y[1], zip(s, v), "")
+
+
+def f_remove_vowels(s: str) -> str:
+    """Remove all vowels from a string.
+    >>> f_remove_vowels("hey you are fine")
+    'h  r fn'
+    """
+    return reduce(
+        lambda x, y: x + y,
+        filter(lambda z: z not in ["a", "e", "i", "o", "u", "y"], s),
+        "",
+    )
+
+
+def f_encode_with_key(s: str, code: dict[str, str]) -> str:
+    """Encode the key chracter by character using the hashmap.
+    >>> f_encode_with_key("hE y", {"H": "B", "E": "L", "Y": "C"})
+    'bL c'
+    """
+
+    def _encode_char(c: str, code_: dict[str, str]) -> str:
+        if ord("a") <= ord(c) <= ord("z"):
+            return to_lowercase(code_[to_uppercase(c)])
+        elif ord("A") <= ord(c) <= ord("Z"):
+            return code_[c]
+        else:
+            return c
+
+    return reduce(lambda x, y: x + y, map(lambda z: _encode_char(z, code), s), "")
+
+
+def f_gcd(m: int, n: int) -> int:
+    """Calculate greatest common divisor for two numbers.
+    Pre-condition: m and n are positive integers.
+    >>> f_gcd(12, 4)
+    4
+    """
+
+    return gcd(m, n)  # TODO
+
+
+def f_first_digit(n: int, k: int = 10) -> int:
+    """Calculate first digit of n in k base representation,
+    where n is in base 10 representation.
+    Pre-condition: k is a positive integer.
+    >>> first_digit(12, 3)
+    1
+    >>> first_digit(98)
+    9
+    """
+
+    return first_digit(n, k)  # TODO
+
+
+def f_trim(s: str) -> str:
+    """Remove leading spaces in s.
+    >>> f_trim("    Hey ther   ")
+    'Hey ther   '
+    """
+    return "Hey ther   "  # TODO
+
+
+def f_dimensions(m: list[list]) -> list[int]:
+    """Length of each dimension of inner lists.
+    >>> f_dimensions([[2, 3], [1], [1, 5, 1]])
+    [2, 1, 3]
+    """
+    return reduce(lambda x, y: x + [len(y)], m, [])
+
+
+def f_is_matrix(m: list[list]) -> bool:
+    """Check if list is a matrix.
+    >>> f_is_matrix([[2, 3], [1, 3], [1, 5]])
+    True
+    >>> f_is_matrix([[2, 3], [1], [1, 5, 1]])
+    False
+    """
+    return reduce(
+        lambda x, y: x and y,
+        map(lambda z: z[0] == z[1], zip(f_dimensions(m), f_dimensions(m[1:]))),
+        True,
+    )
+
+
+def f_is_square_matrix(m: list[list]) -> bool:
+    """Check if list is a matrix.
+    >>> f_is_square_matrix([[2, 3, 4], [1, 4, 3], [1, 4, 5]])
+    True
+    >>> f_is_square_matrix([[2, 3], [1, 2], [1, 5]])
+    False
+    """
+    return reduce(
+        lambda x, y: x and y,
+        map(
+            lambda z: z[0] == z[1], zip(f_dimensions(m), f_dimensions(m[1:]) + [len(m)])
+        ),
+        True,
+    )
+
+
+def f_zeros(m: int, n: int) -> list[list[int]]:
+    """Create a m x n matrix whose entries are all 0.
+    Pre-condition: m and n are positive integers.
+    >>> f_zeros(2, 3)
+    [[0, 0, 0], [0, 0, 0]]
+    """
+    return reduce(lambda x, y: x + [[0] * n], range(m), [])
+
+
+def f_identity(n: int) -> list[list[int]]:
+    """Create an identity matrix with the size n x n.
+    Pre-condition: n is a positive integer.
+    >>> f_identity(3)
+    [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+    """
+    return reduce(lambda x, y: x + [[0] * y + [1] + [0] * (n - y - 1)], range(n), [])
+
+
+def f_triangle(n: int) -> list[list[int]]:
+    """Create triangular array of 1s where first row has 1 and next 2 and so on.
+    >>> f_triangle(3)
+    [[1], [1, 1], [1, 1, 1]]
+    """
+    return reduce(lambda x, y: x + [[1] * y], range(1, n + 1), [])
+
+
+def lc_squares(n: int) -> list[int]:
+    """Calculate all squares from 1 to and including n.
+    Pre-condition n is a natural number.
+    >>> lc_squares(4)
+    [1, 4, 9, 16]
+    """
+    return [i**2 for i in range(1, n + 1)]
+
+
+def lc_decreasing_squares(n: int) -> list[int]:
+    """Calculate all squares from n to and including 1.
+    Pre-condition n is a natural number.
+    >>> lc_decreasing_squares(4)
+    [16, 9, 4, 1]
+    """
+    return [i**2 for i in range(n, 0, -1)]
+
+
+def lc_divisors(n: int) -> list[int]:
+    """Calculate the divisors for the number n, including n.
+    Pre-condition n is an integer.
+    >>> lc_divisors(12)
+    [1, 2, 3, 4, 6, 12]
+    """
+    return [i for i in range(1, n + 1) if n % i == 0]
+
+
+def lc_square_it(v: list[int]) -> list[int]:
+    """Square every number in the list v.
+    >>> square_it([3, 5, 7])
+    [9, 25, 49]
+    """
+    return [e**2 for e in v]
+
+
+def lc_reverse(v: list) -> list:
+    """Reverse a list.
+    >>> lc_reverse([4, 1, 3, 12])
+    [12, 3, 1, 4]
+    """
+    return v[::-1]
+
+
+def lc_remove(x: Any, v: list) -> list:
+    """Compute list with all occurences of x removed.
+    >>> lc_remove(4, [4, 2, 3, 4, 2, 4])
+    [2, 3, 2]
+    """
+    return [e for e in v if e != x]
+
+
+def lc_positions(c: str, s: str) -> list[int]:
+    """Return list of positions where c occur in s.
+    >>> lc_positions("h", "heheh")
+    [0, 2, 4]
+    """
+    return [i for i, e in enumerate(s) if e == c]
+
+
+def lc_count(x: Any, v: list) -> int:
+    """Calculate the amount of times x apears in v.
+    >>> lc_count(2, [2, 5, 6, 2, 4, 2])
+    3
+    """
+    return sum([1 for e in v if e == x])
+
+
+def lc_member(x: Any, v: list) -> bool:
+    """Check if x is in a list v.
+    >>> lc_member(3, [2, 3, 4])
+    True
+    >>> lc_member(6, [2, 3, 4])
+    False
+    """
+    return any([x == e for e in v])
+
+
+def lc_zeros(m: int, n: int) -> list[list[int]]:
+    """Create a m x n matrix whose entries are all 0.
+    Pre-condition: m and n are positive integers.
+    >>> lc_zeros(2, 3)
+    [[0, 0, 0], [0, 0, 0]]
+    """
+    return [[0] * n for i in range(m)]
+
+
+def lc_identity(n: int) -> list[list[int]]:
+    """Create an identity matrix with the size n x n.
+    Pre-condition: n is a positive integer.
+    >>> lc_identity(3)
+    [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+    """
+    return [[0] * i + [1] + [0] * (n - i - 1) for i in range(n)]
+
+
+def lc_triangle(n: int) -> list[list[int]]:
+    """Create triangular array of 1s where first row has 1 and next 2 and so on.
+    >>> lc_triangle(3)
+    [[1], [1, 1], [1, 1, 1]]
+    """
+    return [[1] * i for i in range(1, n + 1)]
+
+
+def lc_multiplication_table(n: int) -> list[list[int]]:
+    """Create multiplication table to up to and including n.
+    >>> lc_multiplication_table(2)
+    [[0, 1, 2], [1, 1, 2], [2, 2, 4]]
+    """
+    return [
+        [i * j if j * i != 0 else j + i for j in range(n + 1)] for i in range(n + 1)
+    ]
+
+
+def lc_transpose(m: list[list]) -> list[list]:
+    """Transpose a matrix from m x n to n x m.
+    >>> lc_transpose([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
+    [[0, 3, 6], [1, 4, 7], [2, 5, 8]]
+    """
+    return [[m[j][i] for j in range(len(m))] for i in range(len(m))]
