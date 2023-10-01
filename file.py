@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Callable
 from contextlib import suppress
 from functools import reduce
 
@@ -1552,3 +1552,14 @@ def lc_transpose(m: list[list]) -> list[list]:
     [[0, 3, 6], [1, 4, 7], [2, 5, 8]]
     """
     return [[m[j][i] for j in range(len(m))] for i in range(len(m))]
+
+
+def sp_find_zero(f: Callable[[int], int]) -> int:
+    """Find the first natural number that result in f returning 0.
+    >>> sp_find_zero(lambda x: x*2-8)
+    4
+    """
+    i = 0
+    while f(i) != 0:
+        i += 1
+    return i
