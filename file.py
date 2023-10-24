@@ -1697,3 +1697,53 @@ def add(m: str, n: str) -> str:
         ),
         "",
     )
+
+
+def diff(m: str, n: str) -> str:
+    """Find the difference between roman numbers where m is strictly larger than n.
+    >>> diff('MMCLVI', 'MLXVI')
+    'MLXXXX'
+    >>> diff('MMMDCXVIII', 'MCXXVI')
+    'MMCCCCLXXXXII'
+    """
+
+    NUMERALS_POP = {
+        "M": 2 * "D",
+        "D": 5 * "C",
+        "C": 2 * "L",
+        "L": 5 * "X",
+        "X": 2 * "V",
+        "V": 5 * "I",
+    }
+    NUMERALS_RELATIVE_SIZE = dict(map(lambda x: (x[1], x[0]), enumerate("IVXLCDM")))
+
+    def _reverse_index(s: str, c: str) -> int:
+        return fixpoint(lambda i: i if i <= -1 or s[i] == c else i - 1, len(s) - 1)
+
+    def _reverse_bigger_than_index(s: str, c: str) -> int:
+        return fixpoint(
+            lambda i: i
+            if i <= -1 or NUMERALS_RELATIVE_SIZE[s[i]] > NUMERALS_RELATIVE_SIZE[c]
+            else i - 1,
+            len(s) - 1,
+        )
+
+    def _diff_fixpoint(bigger_remove: (str, str)) -> (str, str):
+        bigger, remove = bigger_remove
+        if remove == "":
+            return (bigger, remove)
+        elif _reverse_index(bigger, remove[-1]) != -1:
+            return (
+                bigger[: _reverse_index(bigger, remove[-1])]
+                + bigger[_reverse_index(bigger, remove[-1]) + 1 :],
+                remove[:-1],
+            )
+        else:
+            return (
+                bigger[: _reverse_bigger_than_index(bigger, remove[-1])]
+                + NUMERALS_POP[bigger[_reverse_bigger_than_index(bigger, remove[-1])]]
+                + bigger[_reverse_bigger_than_index(bigger, remove[-1]) + 1 :],
+                remove,
+            )
+
+    return fixpoint(_diff_fixpoint, (m, n))[0]
