@@ -736,16 +736,26 @@ def to_lowercase(s: str) -> str:
 def toCamelCase(s: str) -> str:
     """Changes text to camel case by removing spaces,
     and changing the next character to uppercase.
-    >>> toCamelCase("this is camel case")
+    >>> toCamelCase("this is  camel case")
     'thisIsCamelCase'
     """
+
+    def _trim_left(s: str) -> str:
+        if s == "":
+            return ""
+        elif s[0] == " ":
+            return _trim_left(s[1:])
+        else:
+            return s
+
     if not s:
         return ""
     elif s[0] == " ":
-        if len(s) == 2:  # check if there isn't a character after space
+        t = _trim_left(s[1:])
+        if t == "":
             return ""
         else:
-            return to_uppercase(s[1]) + toCamelCase(s[2:])
+            return to_uppercase(t[0]) + toCamelCase(t[1:])
     else:
         return s[0] + toCamelCase(s[1:])
 
@@ -1020,7 +1030,7 @@ def f_decreasing_squares(n: int) -> list[int]:
     >>> f_decreasing_squares(4)
     [16, 9, 4, 1]
     """
-    return list(map(lambda x: x**2, range(n, 1 - 1, -1)))
+    return list(map(lambda x: x**2, range(n, 0, -1)))
 
 
 def f_reverse(v: list) -> list:
@@ -1554,12 +1564,136 @@ def lc_transpose(m: list[list]) -> list[list]:
     return [[m[j][i] for j in range(len(m))] for i in range(len(m))]
 
 
+'''
 def sp_find_zero(f: Callable[[int], int]) -> int:
     """Find the first natural number that result in f returning 0.
     >>> sp_find_zero(lambda x: x*2-8)
     4
     """
-    i = 0
-    while f(i) != 0:
-        i += 1
-    return i
+
+    def _recursive(i: int = 0) -> int:
+        if f(i) != 0:
+            return f(i + 1)
+        else:
+            return i
+
+    def _iterative():
+        i = 0
+        while f(i) != 0:
+            i += 1
+        return i
+
+    def _functional():
+        return
+
+    r = _recursive()
+    if r != _iterative():
+        raise Exception()
+    return r
+'''
+
+
+def roman_to_num(num: str) -> int:
+    """Convert roman numeral to integer.
+    >>> roman_to_num("MMCCCXXXXI")
+    2341
+    >>> roman_to_num("")
+    0
+    """
+
+    def _char_roman_to_num(c: str) -> int:
+        return {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}[c]
+
+    return reduce(lambda x, y: x + y, map(_char_roman_to_num, num), 0)
+
+
+def fixpoint(f, x: Any):
+    """Applies f to x until a fixpoint is reached.
+    >>> fixpoint(lambda x: x*x-2, 1)
+    -1
+    """
+    if f(x) == x:
+        return x
+    else:
+        return fixpoint(f, f(x))
+
+
+def num_to_roman(num: int) -> int:
+    """Convert roman numeral to integer.
+    >>> num_to_roman(2346)
+    'MMCCCXXXXVI'
+    >>> num_to_roman(341)
+    'CCCXXXXI'
+    >>> num_to_roman(41)
+    'XXXXI'
+    >>> num_to_roman(0)
+    ''
+    """
+    return reduce(
+        lambda z, k: z + (k[1] * (int(k[0]) // 5)) + (k[2] * (int(k[0]) % 5)),
+        map(
+            lambda x, y: (x, y[0], y[1]),
+            str(num),
+            [" M", "DC", "LX", "VI"][4 - len(str(num)) :],
+        ),
+        "",
+    )
+
+
+def is_roman_number(s: str) -> bool:
+    """Check if a string is a valid Roman numeral.
+    >>> is_roman_number("XXXXXI")
+    False
+    >>> is_roman_number("LLV")
+    False
+    >>> is_roman_number("Z")
+    False
+    >>> is_roman_number("CM")
+    False
+    >>> is_roman_number("MMCCCXXXXVI")
+    True
+    """
+
+    def _char_roman_to_num(c: str) -> int:
+        return {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}[c]
+
+    def _count(s: str, c: str) -> int:
+        return reduce(lambda x, y: x + 1, filter(lambda z: z == c, s), 0)
+
+    return all(
+        (
+            reduce(lambda x, y: x and y in "MDCLXVI", s, True),
+            reduce(
+                lambda z, k: z and _char_roman_to_num(k[0]) >= _char_roman_to_num(k[1]),
+                map(lambda x, y: (x, y), s, s[1:]),
+                True,
+            ),
+            reduce(
+                lambda z, k: z and _count(s, k[0]) <= k[1],
+                map(
+                    lambda x, y: (x, y),
+                    ["V", "L", "D", "I", "X", "C"],
+                    [1, 1, 1, 4, 4, 4],
+                ),
+                True,
+            ),
+        )
+    )
+
+
+def add(m: str, n: str) -> str:
+    """Adds two roman numerals.
+    >>> add("MVIIII", "MXVIII")
+    'MMXXVII'
+    """
+
+    return reduce(
+        lambda x, y: x + ((y[0] // y[1]) * y[3]) + ((y[0] % y[1]) * y[2]),
+        map(
+            lambda x, y, z: (f_count(y, m + n), x, y, z),
+            [1, 2, 5, 2, 5, 2, 5],
+            ["M", "D", "C", "L", "X", "V", "I"],
+            ["M", "M", "D", "C", "L", "X", "V"],
+        ),
+        "",
+    )
