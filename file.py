@@ -1721,10 +1721,9 @@ def diff(m: str, n: str) -> str:
         return fixpoint(lambda i: i if i <= -1 or s[i] == c else i - 1, len(s) - 1)
 
     def _reverse_bigger_than_index(s: str, c: str) -> int:
+        c_size = NUMERALS_RELATIVE_SIZE[c]
         return fixpoint(
-            lambda i: i
-            if i <= -1 or NUMERALS_RELATIVE_SIZE[s[i]] > NUMERALS_RELATIVE_SIZE[c]
-            else i - 1,
+            lambda i: i if i <= -1 or NUMERALS_RELATIVE_SIZE[s[i]] > c_size else i - 1,
             len(s) - 1,
         )
 
@@ -1732,18 +1731,20 @@ def diff(m: str, n: str) -> str:
         bigger, remove = bigger_remove
         if remove == "":
             return (bigger, remove)
-        elif _reverse_index(bigger, remove[-1]) != -1:
-            return (
-                bigger[: _reverse_index(bigger, remove[-1])]
-                + bigger[_reverse_index(bigger, remove[-1]) + 1 :],
-                remove[:-1],
-            )
         else:
-            return (
-                bigger[: _reverse_bigger_than_index(bigger, remove[-1])]
-                + NUMERALS_POP[bigger[_reverse_bigger_than_index(bigger, remove[-1])]]
-                + bigger[_reverse_bigger_than_index(bigger, remove[-1]) + 1 :],
-                remove,
-            )
+            equal_to = _reverse_index(bigger, remove[-1])
+            if equal_to != -1:
+                return (
+                    bigger[:equal_to] + bigger[equal_to + 1 :],
+                    remove[:-1],
+                )
+            else:
+                larger_than = _reverse_bigger_than_index(bigger, remove[-1])
+                return (
+                    bigger[:larger_than]
+                    + NUMERALS_POP[bigger[larger_than]]
+                    + bigger[larger_than + 1 :],
+                    remove,
+                )
 
     return fixpoint(_diff_fixpoint, (m, n))[0]
